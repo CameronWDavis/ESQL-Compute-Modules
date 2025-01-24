@@ -1,0 +1,23 @@
+
+CREATE COMPUTE MODULE OUTPUTMODIFY_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE inputRef REFERENCE TO InputRoot.JSON.Data;
+        -- Copy input properties and message descriptor
+        SET OutputRoot.Properties = InputRoot.Properties;
+        SET OutputRoot.MQMD = InputRoot.MQMD;
+
+        -- Create output JSON structure
+        CREATE FIELD OutputRoot.JSON.Data;
+
+        -- Combine first and last name
+        SET OutputRoot.JSON.Data.firstn = InputRoot.JSON.Data.firstn;
+        SET OutputRoot.JSON.Data.lastn = InputRoot.JSON.Data.lastn;
+        SET OutputRoot.JSON.Data.fullname = 
+            TRIM(CAST(InputRoot.JSON.Data.firstn AS CHARACTER) || ' ' || 
+                 CAST(InputRoot.JSON.Data.lastn AS CHARACTER));
+
+        RETURN TRUE;
+	END;
+
+END MODULE;
